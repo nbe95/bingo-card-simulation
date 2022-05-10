@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 """Main Bingo module. Which combination of cards has the highest chance to win?"""
 
 from typing import List
@@ -15,3 +17,21 @@ CARDS: List[Card] = [
     Card("blau", "#0077bb", [15, 3, 23, 25, 6, 11, 18, 28, 5]),
     Card("orange", "#c18000", [5, 16, 19, 21, 2, 13, 26, 10, 24])
 ]
+
+
+def find_combinations(cards: List[Card], num: int) -> List[List[Card]]:
+    """Return all possible permutations using n cards."""
+    return [cards[1:3], cards[5:7]]
+
+
+def main():
+    """Main entry point."""
+    for num in range(1, 6):
+        print(f"=== Finding best combinations for {num} cards. ===")
+        combinations: List[Card] = find_combinations(CARDS, num)
+        print(" + ".join(c.name for c in combinations))
+        print()
+
+
+if __name__ == "__main__":
+    main()

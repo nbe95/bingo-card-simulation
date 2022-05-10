@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 """Bingo Card module."""
 
 from typing import List
