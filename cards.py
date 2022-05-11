@@ -12,6 +12,18 @@ class Card:
         self.color: str = color
         self.fields: List[int] = fields
 
+    def get_name(self) -> str:
+        """Return the card's name."""
+        return self.name
+
+    def get_color(self) -> str:
+        """Return the card's color."""
+        return self.color
+
+    def get_fields(self) -> List[int]:
+        """Return the card's fields."""
+        return self.fields
+
 
 CARDS: List[Card] = [
     Card("rot", "#d90655", [11, 27, 1, 24, 14, 18, 21, 4, 9]),

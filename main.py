@@ -33,7 +33,7 @@ def main():
         print(f"=== Finding best combinations for {num} card(s). ===")
         combinations: List[List[Card]] = find_combinations(CARDS, num)
         for comb in combinations:
-            print(i, "+".join(card.name for card in comb))
+            print(i, "+".join(card.get_name() for card in comb))
             i += 1
         print()
 
