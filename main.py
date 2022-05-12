@@ -21,13 +21,13 @@ def find_permutations(elements: List[Any], n: int) -> List[List[Any]]:
     # More iterations necessary - extend result list by each subset
     result: List[List[Any]] = []
     for i, element in enumerate(elements):
-        remaining = elements[i + 1:]
-        subtree = find_permutations(remaining, n - 1)
+        remaining: List[Any] = elements[i + 1:]
+        subtree: List[List[Any]] = find_permutations(remaining, n - 1)
         result.extend([[element, *x] for x in subtree])
     return result
 
 
-def main(num_of_cards: int):
+def main(num_of_cards: int = 1, simu_cycles: int = 10000):
     """Main entry point."""
 
     # Print card overview
@@ -49,5 +49,4 @@ def main(num_of_cards: int):
 
 
 if __name__ == "__main__":
-    num: int = 1
-    main(num)
+    main()
