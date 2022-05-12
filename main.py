@@ -27,18 +27,31 @@ def find_permutations(elements: List[int], n: int) -> List[List[int]]:
     return result
 
 
-def main():
+def main(num_of_cards: int):
     """Main entry point."""
-    for num in range(1, 6):
-        i: int = 0
-        print(f"=== Finding best combinations for {num} card(s). ===")
-        combinations: List[List[int]] = find_permutations(range(len(CARDS)), num)
-        for comb in combinations:
-            cards = [CARDS[x] for x in comb]
-            print(i, " ".join(f"{x.draw_terminal_color()}{x.get_name():8}" for x in cards))
-            i += 1
-        print()
+
+    # Print card overview
+    print("=== Configured Bingo cards ===")
+    for i in range(len(CARDS)):
+        print("{:>12} {} {}".format(
+            CARDS[i].get_name(),
+            CARDS[i].draw_terminal_color(),
+            " ".join(f"{x:2}" for x in CARDS[i].get_numbers())
+        ))
+    print()
+
+    # Walk through all permutations
+    print(f"=== Finding best combinations for {num_of_cards} card(s). ===")
+    combinations: List[List[int]] = find_permutations(range(len(CARDS)), num_of_cards)
+
+    print(f"Total permutations: {len(combinations)}")
+    i: int = 0
+    for comb in combinations:
+        cards = [CARDS[x] for x in comb]
+        print(" ".join(f"{x.draw_terminal_color()}" for x in cards))
+        i += 1
 
 
 if __name__ == "__main__":
-    main()
+    num_of_cards: int = 1
+    main(num_of_cards)
