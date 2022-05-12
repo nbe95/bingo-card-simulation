@@ -2,7 +2,9 @@
 
 """Main Bingo module. Which combination of cards has the highest chance to win?"""
 
+from time import sleep
 from typing import Any, List, Set
+from tqdm import tqdm  # type: ignore
 from cards import Card, CARDS
 
 
@@ -27,7 +29,7 @@ def find_permutations(elements: List[Any], n: int) -> List[Set[Any]]:
     return result
 
 
-def main(num_of_cards: int = 1, simu_cycles: int = 10000):
+def main(num_of_cards: int = 2, simu_cycles: int = 100000):
     """Main entry point."""
 
     # Print card overview
@@ -37,12 +39,22 @@ def main(num_of_cards: int = 1, simu_cycles: int = 10000):
               f"{' '.join(f'{x:2}' for x in card.get_numbers())}")
     print()
 
-    # Walk through all permutations
-    print(f"=== Finding best combinations for {num_of_cards} card(s). ===")
+    # Find all possible combinations/permutations
+    print(f"=== Simulating combinations of {num_of_cards} cards ===")
     elements: Set[int] = set(range(len(CARDS)))
     combinations: List[Set[int]] = find_permutations(list(elements), num_of_cards)
+    print(f"Found a total of {len(combinations)} permutations.")
 
-    print(f"Total permutations: {len(combinations)}")
+    # Do something with the permutations...
+    print(f"Performing {simu_cycles:,} simulation cycles with each permutation.")
+    with tqdm(total=len(combinations)) as progress:
+        for _ in combinations:
+            sleep(0.1)
+            progress.update()
+    print()
+
+    # Print results
+    print("=== Simulation results ===")
     for count, perm in enumerate(combinations):
         cards: List[Card] = [CARDS[x] for x in perm]
         print(f"{count+1:5}: {'+'.join(f'{x.draw_terminal_color()}' for x in cards)}")
