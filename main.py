@@ -32,26 +32,22 @@ def main(num_of_cards: int):
 
     # Print card overview
     print("=== Configured Bingo cards ===")
-    for i in range(len(CARDS)):
-        print("{:>12} {} {}".format(
-            CARDS[i].get_name(),
-            CARDS[i].draw_terminal_color(),
-            " ".join(f"{x:2}" for x in CARDS[i].get_numbers())
-        ))
+    for card in CARDS:
+        print(f"{card.get_name():>12} {card.draw_terminal_color()} "
+              f"{' '.join(f'{x:2}' for x in card.get_numbers())}")
     print()
 
     # Walk through all permutations
     print(f"=== Finding best combinations for {num_of_cards} card(s). ===")
-    combinations: List[List[int]] = find_permutations(range(len(CARDS)), num_of_cards)
+    elements: List[int] = list(range(len(CARDS)))
+    combinations: List[List[int]] = find_permutations(elements, num_of_cards)
 
     print(f"Total permutations: {len(combinations)}")
-    i: int = 0
-    for comb in combinations:
+    for count, comb in enumerate(combinations):
         cards = [CARDS[x] for x in comb]
-        print(" ".join(f"{x.draw_terminal_color()}" for x in cards))
-        i += 1
+        print(f"{count+1:5}: {'+'.join(f'{x.draw_terminal_color()}' for x in cards)}")
 
 
 if __name__ == "__main__":
-    num_of_cards: int = 1
-    main(num_of_cards)
+    num: int = 1
+    main(num)
