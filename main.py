@@ -15,7 +15,7 @@ def options() -> argparse.Namespace:
         description="Bingo card combination simulator. "
                     "Which combination of cards has the highest chance to win?")
 
-    parser.add_argument("--num_of_cards", "-n", type=int, default=2,
+    parser.add_argument("num_of_cards", type=int,
                         help="number of cards in each set to be analyzed")
     parser.add_argument("--simu_cycles", "-c", type=int, default=100000,
                         help="number of simulation cycles for each combination")
@@ -74,8 +74,13 @@ def main(args: argparse.Namespace) -> None:
     print("=== Simulation results ===")
     for count, perm in enumerate(combinations):
         cards: List[Card] = [CARDS[x] for x in perm]
-        print(f"{count+1:5}: {'+'.join(f'{x.draw_terminal_color()}' for x in cards)}")
+        print(f"{count+1:5}: {' '.join(f'{x.draw_terminal_color()}' for x in cards)}")
 
 
 if __name__ == "__main__":
-    main(options())
+    opt: argparse.Namespace = options()
+    if opt.num_of_cards not in range(1, len(CARDS) + 1):
+        raise argparse.ArgumentTypeError(
+            f"Invalid number of cards supplied. (Valid: 1..{len(CARDS)})")
+
+    main(opt)
