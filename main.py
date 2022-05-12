@@ -2,10 +2,25 @@
 
 """Main Bingo module. Which combination of cards has the highest chance to win?"""
 
+import argparse
 from time import sleep
 from typing import Any, List, Set
 from tqdm import tqdm  # type: ignore
 from cards import Card, CARDS
+
+
+def options() -> argparse.Namespace:
+    """Wrapper for CLI argument parsing."""
+    parser = argparse.ArgumentParser(
+        description="Bingo card combination simulator. "
+                    "Which combination of cards has the highest chance to win?")
+
+    parser.add_argument("--num_of_cards", "-n", type=int, default=2,
+                        help="number of cards in each set to be analyzed")
+    parser.add_argument("--simu_cycles", "-c", type=int, default=100000,
+                        help="number of simulation cycles for each combination")
+
+    return parser.parse_args()
 
 
 def find_permutations(elements: List[Any], n: int) -> List[Set[Any]]:
@@ -29,7 +44,7 @@ def find_permutations(elements: List[Any], n: int) -> List[Set[Any]]:
     return result
 
 
-def main(num_of_cards: int = 2, simu_cycles: int = 100000):
+def main(args: argparse.Namespace) -> None:
     """Main entry point."""
 
     # Print card overview
@@ -40,13 +55,13 @@ def main(num_of_cards: int = 2, simu_cycles: int = 100000):
     print()
 
     # Find all possible combinations/permutations
-    print(f"=== Simulating combinations of {num_of_cards} cards ===")
+    print(f"=== Simulating combinations of {args.num_of_cards} cards ===")
     elements: Set[int] = set(range(len(CARDS)))
-    combinations: List[Set[int]] = find_permutations(list(elements), num_of_cards)
+    combinations: List[Set[int]] = find_permutations(list(elements), args.num_of_cards)
     print(f"Found a total of {len(combinations)} permutations.")
 
     # Do something with the permutations...
-    print(f"Performing {simu_cycles:,} simulation cycles with each permutation.")
+    print(f"Performing {args.simu_cycles:,} simulation cycles with each permutation.")
     with tqdm(total=len(combinations)) as progress:
         for _ in combinations:
             sleep(0.1)
@@ -61,4 +76,4 @@ def main(num_of_cards: int = 2, simu_cycles: int = 100000):
 
 
 if __name__ == "__main__":
-    main()
+    main(options())
