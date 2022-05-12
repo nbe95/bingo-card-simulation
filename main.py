@@ -6,7 +6,7 @@ from typing import Any, List, Set
 from cards import Card, CARDS
 
 
-def find_permutations(elements: List[Any], n: int) -> List[List[Any]]:
+def find_permutations(elements: List[Any], n: int) -> List[Set[Any]]:
     """Recursively return all possible permutations picking n elements from a given
     set without repetition."""
 
@@ -16,14 +16,14 @@ def find_permutations(elements: List[Any], n: int) -> List[List[Any]]:
 
     # Only one level left - return each remaining element as option
     if n == 1:
-        return [[x] for x in elements]
+        return [{x} for x in elements]
 
     # More iterations necessary - extend result list by each subset
-    result: List[List[Any]] = []
+    result: List[Set[Any]] = []
     for i, element in enumerate(elements):
         remaining: List[Any] = elements[i + 1:]
-        subtree: List[List[Any]] = find_permutations(remaining, n - 1)
-        result.extend([[element, *x] for x in subtree])
+        subtree: List[Set[Any]] = find_permutations(remaining, n - 1)
+        result.extend([{element, *x} for x in subtree])
     return result
 
 
@@ -40,7 +40,7 @@ def main(num_of_cards: int = 1, simu_cycles: int = 10000):
     # Walk through all permutations
     print(f"=== Finding best combinations for {num_of_cards} card(s). ===")
     elements: Set[int] = set(range(len(CARDS)))
-    combinations: List[Set[int]] = [set(x) for x in find_permutations(list(elements), num_of_cards)]
+    combinations: List[Set[int]] = find_permutations(list(elements), num_of_cards)
 
     print(f"Total permutations: {len(combinations)}")
     for count, perm in enumerate(combinations):
