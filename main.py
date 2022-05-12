@@ -17,9 +17,9 @@ def options() -> argparse.Namespace:
 
     parser.add_argument("num_of_cards", type=int,
                         help="number of cards in each set to be analyzed")
-    parser.add_argument("--simu_cycles", "-c", type=int, default=100000,
+    parser.add_argument("-c", "--simu_cycles", type=int, default=100000,
                         help="number of simulation cycles for each combination")
-    parser.add_argument("--verbose-results", "-v", action='store_true',
+    parser.add_argument("-v", "--verbose-results", action='store_true',
                         help="show all results instead of summary list")
 
     return parser.parse_args()
