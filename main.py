@@ -2,13 +2,13 @@
 
 """Main Bingo module. Which combination of cards has the highest chance to win?"""
 
-from typing import List
-from cards import CARDS
+from typing import Any, List, Set
+from cards import Card, CARDS
 
 
-def find_permutations(elements: List[int], n: int) -> List[List[int]]:
-    """Recursively return all possible permutations (without repetitions) using a set of n integers
-    representing arbitrary elements e.g. indices."""
+def find_permutations(elements: List[Any], n: int) -> List[List[Any]]:
+    """Recursively return all possible permutations picking n elements from a given
+    set without repetition."""
 
     # Exit condition in case of parameter error
     if n <= 0 or n > len(elements):
@@ -19,11 +19,11 @@ def find_permutations(elements: List[int], n: int) -> List[List[int]]:
         return [[x] for x in elements]
 
     # More iterations necessary - extend result list by each subset
-    result: List[List[int]] = []
-    for i in range(len(elements)):
+    result: List[List[Any]] = []
+    for i, element in enumerate(elements):
         remaining = elements[i + 1:]
         subtree = find_permutations(remaining, n - 1)
-        result.extend([[elements[i], *x] for x in subtree])
+        result.extend([[element, *x] for x in subtree])
     return result
 
 
@@ -39,12 +39,12 @@ def main(num_of_cards: int):
 
     # Walk through all permutations
     print(f"=== Finding best combinations for {num_of_cards} card(s). ===")
-    elements: List[int] = list(range(len(CARDS)))
-    combinations: List[List[int]] = find_permutations(elements, num_of_cards)
+    elements: Set[int] = set(range(len(CARDS)))
+    combinations: List[Set[int]] = [set(x) for x in find_permutations(list(elements), num_of_cards)]
 
     print(f"Total permutations: {len(combinations)}")
-    for count, comb in enumerate(combinations):
-        cards = [CARDS[x] for x in comb]
+    for count, perm in enumerate(combinations):
+        cards: List[Card] = [CARDS[x] for x in perm]
         print(f"{count+1:5}: {'+'.join(f'{x.draw_terminal_color()}' for x in cards)}")
 
 
