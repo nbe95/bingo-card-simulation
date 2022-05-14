@@ -90,12 +90,21 @@ def main(args: argparse.Namespace) -> None:
 
         # Print results
         print("=== Simulation results ===")
+        print("Score = Number of card drawings until one of the chosen cards is completed.")
+        highest_lowest: int = 10
+        if not args.verbose_results:
+            print(f"Showing only the {highest_lowest} best and worst results. (Show all with -v flag.)")
+
         total_results.sort(key=lambda x: x[1], reverse=False)
         for i, result in enumerate(total_results):
-            cards: List[Card] = [CARDS[x] for x in result[0]]
-            score: float = result[1]
-            print(f"{i+1:10}: {' '.join(f'{x.draw_terminal_color()}' for x in cards)} "
-                f"Score = {score:.3f}")
+            if i < highest_lowest or i >= len(total_results) - highest_lowest or args.verbose_results:
+                cards: List[Card] = [CARDS[x] for x in result[0]]
+                score: float = result[1]
+                print(f"{i+1:10}: {' '.join(f'{x.draw_terminal_color()}' for x in cards)} "
+                    f"Score = {score:.3f}")
+
+            elif i == highest_lowest and not args.verbose_results:
+                print()
 
     except KeyboardInterrupt:
         print("Simulation aborted.")
