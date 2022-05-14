@@ -50,49 +50,55 @@ def find_permutations(elements: List[Any], n: int) -> List[Set[Any]]:
 def main(args: argparse.Namespace) -> None:
     """Main entry point."""
 
-    # Print card overview
-    print("=== Configured Bingo cards ===")
-    for card in CARDS:
-        print(f"{card.name:>12} {card.draw_terminal_color()} "
-              f"{' '.join(f'{x:2}' for x in card.numbers)}")
-    print()
+    # Catch Ctrl+C as exit condition
+    try:
+        # Print card overview
+        print("=== Configured Bingo cards ===")
+        for card in CARDS:
+            print(f"{card.name:>12} {card.draw_terminal_color()} "
+                f"{' '.join(f'{x:2}' for x in card.numbers)}")
+        print()
 
-    # Find all possible combinations/permutations
-    print(f"=== Simulating combinations of {args.num_of_cards} cards ===")
-    elements: Set[int] = set(range(len(CARDS)))
-    combinations: List[Set[int]] = find_permutations(list(elements), args.num_of_cards)
-    print(f"Performing {args.simu_cycles:,} simulation cycles "
-          f"with a total set of {len(combinations)} permutations.")
+        # Find all possible combinations/permutations
+        print(f"=== Simulating combinations of {args.num_of_cards} cards ===")
+        elements: Set[int] = set(range(len(CARDS)))
+        combinations: List[Set[int]] = find_permutations(list(elements), args.num_of_cards)
+        print(f"Performing {args.simu_cycles:,} simulation cycles "
+            f"with a total set of {len(combinations)} permutations.")
 
-    # Retrieve card deck dynamically from all given cards
-    card_deck: List[int] = []
-    for card in CARDS:
-        card_deck.extend([x for x in card.numbers if x not in card_deck])
-    card_deck.sort()
+        # Retrieve card deck dynamically from all given cards
+        card_deck: List[int] = []
+        for card in CARDS:
+            card_deck.extend([x for x in card.numbers if x not in card_deck])
+        card_deck.sort()
 
-    # Test all combinations against thousands of ramdomized card decks...
-    total_results: List[Tuple[Set[int], float]] = []
-    iterations: int = len(combinations) * args.simu_cycles
-    with tqdm(total=iterations) as progress:
-        for perm in combinations:
-            perm_results: List[int] = []
-            for _ in range(args.simu_cycles):
-                shuffle(card_deck)
-                card_results: Tuple[int, ...] = (CARDS[x].get_pos_of_last_number(card_deck)
-                                                for x in perm)
-                perm_results.append(max(card_results))
-                progress.update()
-            total_results.append((perm, sum(perm_results) / len(perm_results)))
-    print()
+        # Test all combinations against thousands of ramdomized card decks...
+        total_results: List[Tuple[Set[int], float]] = []
+        iterations: int = len(combinations) * args.simu_cycles
+        with tqdm(total=iterations) as progress:
+            for perm in combinations:
+                perm_results: List[int] = []
+                for _ in range(args.simu_cycles):
+                    shuffle(card_deck)
+                    card_results: Tuple[int, ...] = (CARDS[x].get_pos_of_last_number(card_deck)
+                                                    for x in perm)
+                    perm_results.append(max(card_results))
+                    progress.update()
+                total_results.append((perm, sum(perm_results) / len(perm_results)))
+        print()
 
-    # Print results
-    print("=== Simulation results ===")
-    total_results.sort(key=lambda x: x[1], reverse=False)
-    for i, result in enumerate(total_results):
-        cards: List[Card] = [CARDS[x] for x in result[0]]
-        score: float = result[1]
-        print(f"{i+1:10}: {' '.join(f'{x.draw_terminal_color()}' for x in cards)} - "
-              f"score = {score:.3f}")
+        # Print results
+        print("=== Simulation results ===")
+        total_results.sort(key=lambda x: x[1], reverse=False)
+        for i, result in enumerate(total_results):
+            cards: List[Card] = [CARDS[x] for x in result[0]]
+            score: float = result[1]
+            print(f"{i+1:10}: {' '.join(f'{x.draw_terminal_color()}' for x in cards)} - "
+                f"score = {score:.3f}")
+
+    except KeyboardInterrupt:
+        print("Simulation aborted.")
+        exit(1)
 
 
 if __name__ == "__main__":
