@@ -16,8 +16,14 @@ class Card:
     def get_pos_of_last_number(self, card_deck: Tuple[int, ...]) -> int:
         """Get the position of this card's last drawn number in a given card set.
         This is the total number of iterations this card needs to be completely solved."""
-        position_in_deck: Tuple[int, ...] = tuple(card_deck.index(x) for x in self.numbers)
-        return max(position_in_deck)
+
+        # Iterate over the card deck and abort if there's a matching number on this card.
+        # (It makes no difference wheter we check for the first or last occurence of this number.)
+        for index, number in enumerate(card_deck):
+            if number in self.numbers:
+                return index
+        return 0
+
 
     def draw_terminal_color(self) -> str:
         """Return a color representing field of spaces for ANSI terminals."""
