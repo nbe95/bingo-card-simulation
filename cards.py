@@ -13,7 +13,7 @@ class Card:
         self.color: Color = color
         self.numbers: Tuple[int, ...] = numbers
 
-    def get_pos_of_last_number(self, card_deck: Tuple[int, ...]) -> int:
+    def get_pos_of_last_number(self, card_deck: List[int]) -> int:
         """Get the position of this card's last drawn number in a given card set.
         This is the total number of iterations this card needs to be completely solved."""
 
@@ -23,7 +23,6 @@ class Card:
             if number in self.numbers:
                 return len(card_deck) - index
         return 0
-
 
     def draw_terminal_color(self) -> str:
         """Return a color representing field of spaces for ANSI terminals."""
