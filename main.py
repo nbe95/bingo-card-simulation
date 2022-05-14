@@ -116,7 +116,9 @@ def print_results(results: List[Tuple[Set[int], float]], terse: int = 0) -> None
             cards: List[Card] = [CARDS[x] for x in result[0]]
             score: float = result[1]
             print(f"{i+1:10}: {' '.join(f'{x.draw_terminal_color()}' for x in cards)} "
-                  f"Score = {score:.3f}")
+                  f"Score = {score:.3f}"
+                  f"{' (best)' if i == 0 else ''}"
+                  f"{' (worst)' if i == len(results) - 1 else ''}")
 
         elif terse > 0 and i == terse:
             print()
