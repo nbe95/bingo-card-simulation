@@ -2,10 +2,26 @@
 
 """Bingo simulation module."""
 
-from typing import Any, List, Set, Tuple, Optional
-from cards import Card, CARDS
-from tqdm import tqdm  # type: ignore
+from typing import Any, List, Set, Optional
 from random import shuffle
+from tqdm import tqdm  # type: ignore
+from cards import Card, CARDS
+
+
+class CardSimu:
+    """Wrapper for a card combination and the corresponding simulation score."""
+
+    def __init__(self, combination: Set[int]) -> None:
+        self.combination: Set[int] = combination
+        self.result: Optional[float] = None
+
+    def assign_result(self, score: float) -> None:
+        """Set the simulation score for this combination."""
+        self.result = score
+
+    def get_cards(self) -> Set[Card]:
+        """Retreive the global Card objects for this combination."""
+        return {CARDS[x] for x in self.combination}
 
 
 def find_permutations(elements: List[Any], n: int) -> List[Set[Any]]:
@@ -39,22 +55,23 @@ def print_cards() -> None:
     print()
 
 
-def find_combinations(num_of_cards: int) -> List[Set[int]]:
+def find_combinations(num_of_cards: int) -> List[CardSimu]:
     """Find all possible combinations using n out of all cards."""
 
     print("=== Finding all combinations ===")
-    elements: Set[int] = set(range(len(CARDS)))
-    combinations: List[Set[int]] = find_permutations(list(elements), num_of_cards)
+    elements: List[int] = list(range(len(CARDS)))
+    combinations: List[CardSimu] = [CardSimu(x) for x in find_permutations(elements, num_of_cards)]
     print(f"Found a total of {len(combinations)} permutations "
           f"taking {num_of_cards} out of {len(CARDS)} cards without repetition.")
     print()
     return combinations
 
 
-def do_simulation(combinations: List[Set[int]], cycles: int) -> List[Tuple[Set[int], float]]:
+def do_simulation(combinations: List[CardSimu], cycles: int) -> None:
     """Perform simulation for the given combinations."""
 
-    print(f"=== Simulating combinations of {len(combinations[0])} cards ===")
+    num_of_cards = len(next(iter(combinations[0].get_cards())).numbers)
+    print(f"=== Simulating combinations of {num_of_cards} cards ===")
 
     # Retrieve card deck dynamically from all given cards
     card_deck: List[int] = []
@@ -67,7 +84,6 @@ def do_simulation(combinations: List[Set[int]], cycles: int) -> List[Tuple[Set[i
     print(f"Performing {cycles:,} simulation cycles with each permutation.")
 
     # Test all combinations against thousands of ramdomized card decks...
-    results: List[Tuple[Set[int], float]] = []
     iterations: int = len(combinations) * cycles
     with tqdm(total=iterations) as progress:
         for count, perm in enumerate(combinations):
@@ -75,14 +91,13 @@ def do_simulation(combinations: List[Set[int]], cycles: int) -> List[Tuple[Set[i
             perm_total_sum: int = 0
             for _ in range(cycles):
                 shuffle(card_deck)
-                perm_total_sum += min(CARDS[x].get_pos_of_last_number(card_deck) for x in perm)
+                perm_total_sum += min(x.get_pos_of_last_number(card_deck) for x in perm.get_cards())
                 progress.update()
-            results.append((perm, perm_total_sum / cycles))
+            perm.assign_result(perm_total_sum / cycles)
     print()
-    return results
 
 
-def print_results(results: List[Tuple[Set[int], float]], terse: int = 0) -> None:
+def print_results(combinations: List[CardSimu], terse: int = 0) -> None:
     """Print pretty statistics and all the other nice stuff we want to see."""
 
     print("=== Simulation results ===")
@@ -91,15 +106,13 @@ def print_results(results: List[Tuple[Set[int], float]], terse: int = 0) -> None
         print(f"Showing only the {terse} best and worst results. "
               f"(Show all with -v flag.)")
 
-    results.sort(key=lambda x: x[1], reverse=False)
-    for i, result in enumerate(results):
-        if terse == 0 or i < terse or i >= len(results) - terse:
-            cards: List[Card] = [CARDS[x] for x in result[0]]
-            score: float = result[1]
-            print(f"{i+1:11}: {' '.join(f'{x.draw_terminal_color()}' for x in cards)} "
-                  f"Score = {score:.3f}"
+    combinations.sort(key=lambda x: x.result if x.result else 0, reverse=False)
+    for i, comb in enumerate(combinations):
+        if terse == 0 or i < terse or i >= len(combinations) - terse:
+            print(f"{i+1:11}: {' '.join(f'{x.draw_terminal_color()}' for x in comb.get_cards())} "
+                  f"Score = {comb.result:.3f}"
                   f"{' (best)' if i == 0 else ''}"
-                  f"{' (worst)' if i == len(results) - 1 else ''}")
+                  f"{' (worst)' if i == len(combinations) - 1 else ''}")
 
         elif terse > 0 and i == terse:
             print()

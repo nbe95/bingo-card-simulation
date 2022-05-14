@@ -3,7 +3,6 @@
 """Main Bingo module. Which combination of cards has the highest chance to win?"""
 
 import argparse
-from typing import Any, List, Set, Tuple
 import sys
 from cards import CARDS
 from simulation import print_cards, find_combinations, do_simulation, print_results
@@ -33,8 +32,8 @@ def main(args: argparse.Namespace) -> None:
     try:
         print_cards()
         combinations = find_combinations(args.num_of_cards)
-        results = do_simulation(combinations, args.simu_cycles)
-        print_results(results, 0 if args.verbose_results else 10)
+        do_simulation(combinations, args.simu_cycles)
+        print_results(combinations, 0 if args.verbose_results else 10)
 
     except KeyboardInterrupt:
         print("Simulation aborted.")
