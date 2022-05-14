@@ -58,18 +58,20 @@ def main(args: argparse.Namespace) -> None:
                 f"{' '.join(f'{x:2}' for x in card.numbers)}")
         print()
 
-        # Find all possible combinations/permutations
-        print(f"=== Simulating combinations of {args.num_of_cards} cards ===")
-        elements: Set[int] = set(range(len(CARDS)))
-        combinations: List[Set[int]] = find_permutations(list(elements), args.num_of_cards)
-        print(f"Performing {args.simu_cycles:,} simulation cycles "
-            f"with a total set of {len(combinations)} permutations.")
-
         # Retrieve card deck dynamically from all given cards
         card_deck: List[int] = []
         for card in CARDS:
             card_deck.extend([x for x in card.numbers if x not in card_deck])
         card_deck.sort()
+
+        # Find all possible combinations/permutations
+        print(f"=== Simulating combinations of {args.num_of_cards} cards ===")
+        elements: Set[int] = set(range(len(CARDS)))
+        combinations: List[Set[int]] = find_permutations(list(elements), args.num_of_cards)
+        print(f"Card deck consists of {len(card_deck)} number cards: "
+              f"\n  {' '.join(map(str, card_deck))}")
+        print(f"Performing {args.simu_cycles:,} simulation cycles "
+            f"with a total set of {len(combinations)} permutations.")
 
         # Test all combinations against thousands of ramdomized card decks...
         total_results: List[Tuple[Set[int], float]] = []
