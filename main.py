@@ -95,7 +95,7 @@ def do_simulation(cards: List[Card], combinations: List[Set[int]],
             perm_total_sum: int = 0
             for _ in range(cycles):
                 shuffle(card_deck)
-                perm_total_sum += max(CARDS[x].get_pos_of_last_number(card_deck) for x in perm)
+                perm_total_sum += min(CARDS[x].get_pos_of_last_number(card_deck) for x in perm)
                 progress.update()
             results.append((perm, perm_total_sum / cycles))
     print()
