@@ -7,7 +7,8 @@ from colour import Color  # type: ignore
 
 
 class Card:
-    """Class for each Bingo card."""
+    """Class for a Bingo card."""
+
     def __init__(self, name: str, color: Color, numbers: Tuple[int, ...]) -> None:
         self.name: str = name
         self.color: Color = color
@@ -18,14 +19,17 @@ class Card:
         This is the total number of iterations this card needs to be completely solved."""
 
         # Iterate over the card deck and abort if there's a matching number on this card.
-        # (It makes no difference wheter we check for the first or last occurence of this number.)
+        # (It makes no difference whether we check for the first or last occurence of this number.)
         for index, number in enumerate(card_deck):
             if number in self.numbers:
+                # Increase performance by iterating from the front,
+                # but pretend to do so in backward order (hence subtract).
                 return len(card_deck) - index
         return 0
 
     def draw_terminal_color(self) -> str:
         """Return a color representing field of spaces for ANSI terminals."""
+
         rgb: List[int] = [int(c * 255) for c in self.color.rgb]
         return f"\x1b[48;2;{';'.join(map(str, rgb))}m  \x1b[0m"
 

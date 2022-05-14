@@ -14,7 +14,7 @@ def options() -> argparse.Namespace:
     """Wrapper for CLI argument parsing."""
 
     parser = argparse.ArgumentParser(
-        description="Bingo card combination simulator. "
+        description="An awesome Bingo card combination simulator! "
                     "Which combination of cards has the highest chance to win?")
 
     parser.add_argument("num_of_cards", type=int,
@@ -48,37 +48,36 @@ def find_permutations(elements: List[Any], n: int) -> List[Set[Any]]:
     return result
 
 
-def print_cards(cards: List[Card]) -> None:
+def print_cards() -> None:
     """Print all available Bingo cards."""
 
     print("=== Configured Bingo cards ===")
-    for card in cards:
+    for card in CARDS:
         print(f"{card.name:>12} {card.draw_terminal_color()} "
               f"{' '.join(f'{x:2}' for x in card.numbers)}")
     print()
 
 
-def find_combinations(cards: List[Card], num_of_cards: int) -> List[Set[int]]:
+def find_combinations(num_of_cards: int) -> List[Set[int]]:
     """Find all possible combinations using n out of all cards."""
 
     print("=== Finding all combinations ===")
-    elements: Set[int] = set(range(len(cards)))
+    elements: Set[int] = set(range(len(CARDS)))
     combinations: List[Set[int]] = find_permutations(list(elements), num_of_cards)
     print(f"Found a total of {len(combinations)} permutations "
-          f"taking {num_of_cards} out of {len(cards)} cards without repetition.")
+          f"taking {num_of_cards} out of {len(CARDS)} cards without repetition.")
     print()
     return combinations
 
 
-def do_simulation(cards: List[Card], combinations: List[Set[int]],
-                  cycles: int) -> List[Tuple[Set[int], float]]:
+def do_simulation(combinations: List[Set[int]], cycles: int) -> List[Tuple[Set[int], float]]:
     """Perform simulation for the given combinations."""
 
     print(f"=== Simulating combinations of {len(combinations[0])} cards ===")
 
     # Retrieve card deck dynamically from all given cards
     card_deck: List[int] = []
-    for card in cards:
+    for card in CARDS:
         card_deck.extend([x for x in card.numbers if x not in card_deck])
     card_deck.sort()
 
@@ -103,7 +102,7 @@ def do_simulation(cards: List[Card], combinations: List[Set[int]],
 
 
 def print_results(results: List[Tuple[Set[int], float]], terse: int = 0) -> None:
-    """Print pretty statistics and all the other stuff we wanted to see."""
+    """Print pretty statistics and all the other nice stuff we want to see."""
 
     print("=== Simulation results ===")
     print("Score = Number of card drawings until one of the chosen cards is completed.")
@@ -128,9 +127,9 @@ def main(args: argparse.Namespace) -> None:
 
     # Catch Ctrl+C as exit condition
     try:
-        print_cards(CARDS)
-        combinations = find_combinations(CARDS, args.num_of_cards)
-        results = do_simulation(CARDS, combinations, args.simu_cycles)
+        print_cards()
+        combinations = find_combinations(args.num_of_cards)
+        results = do_simulation(combinations, args.simu_cycles)
         print_results(results, 0 if args.verbose_results else 10)
 
     except KeyboardInterrupt:
