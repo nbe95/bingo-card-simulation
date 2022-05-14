@@ -21,7 +21,7 @@ class Card:
         # (It makes no difference wheter we check for the first or last occurence of this number.)
         for index, number in enumerate(card_deck):
             if number in self.numbers:
-                return index
+                return len(card_deck) - index
         return 0
 
 

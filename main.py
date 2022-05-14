@@ -3,7 +3,6 @@
 """Main Bingo module. Which combination of cards has the highest chance to win?"""
 
 import argparse
-from time import sleep
 from typing import Any, List, Set, Tuple
 from tqdm import tqdm  # type: ignore
 from cards import Card, CARDS
@@ -18,7 +17,7 @@ def options() -> argparse.Namespace:
 
     parser.add_argument("num_of_cards", type=int,
                         help="number of cards in each set to be analyzed")
-    parser.add_argument("-c", "--simu_cycles", type=int, default=10000,
+    parser.add_argument("-c", "--simu_cycles", type=int, default=100000,
                         help="number of simulation cycles for each combination")
     parser.add_argument("-v", "--verbose-results", action='store_true',
                         help="show all results instead of summary list")
@@ -76,15 +75,15 @@ def main(args: argparse.Namespace) -> None:
         total_results: List[Tuple[Set[int], float]] = []
         iterations: int = len(combinations) * args.simu_cycles
         with tqdm(total=iterations) as progress:
-            for perm in combinations:
-                perm_results: List[int] = []
+            for count, perm in enumerate(combinations):
+                progress.set_description(f"Permutation {count} of {len(combinations)}")
+                perm_total_sum: int = 0
                 for _ in range(args.simu_cycles):
                     shuffle(card_deck)
-                    card_results: Tuple[int, ...] = (CARDS[x].get_pos_of_last_number(card_deck)
-                                                    for x in perm)
-                    perm_results.append(max(card_results))
+                    perm_total_sum += max(CARDS[x].get_pos_of_last_number(card_deck) for x in perm)
                     progress.update()
-                total_results.append((perm, sum(perm_results) / len(perm_results)))
+                total_results.append((perm, perm_total_sum / args.simu_cycles))
+        del combinations
         print()
 
         # Print results
@@ -93,8 +92,8 @@ def main(args: argparse.Namespace) -> None:
         for i, result in enumerate(total_results):
             cards: List[Card] = [CARDS[x] for x in result[0]]
             score: float = result[1]
-            print(f"{i+1:10}: {' '.join(f'{x.draw_terminal_color()}' for x in cards)} - "
-                f"score = {score:.3f}")
+            print(f"{i+1:10}: {' '.join(f'{x.draw_terminal_color()}' for x in cards)} "
+                f"Score = {score:.3f}")
 
     except KeyboardInterrupt:
         print("Simulation aborted.")
