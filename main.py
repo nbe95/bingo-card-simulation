@@ -4,9 +4,10 @@
 
 import argparse
 from time import sleep
-from typing import Any, List, Set
+from typing import Any, List, Set, Tuple
 from tqdm import tqdm  # type: ignore
 from cards import Card, CARDS
+from random import shuffle
 
 
 def options() -> argparse.Namespace:
@@ -52,29 +53,46 @@ def main(args: argparse.Namespace) -> None:
     # Print card overview
     print("=== Configured Bingo cards ===")
     for card in CARDS:
-        print(f"{card.get_name():>12} {card.draw_terminal_color()} "
-              f"{' '.join(f'{x:2}' for x in card.get_numbers())}")
+        print(f"{card.name:>12} {card.draw_terminal_color()} "
+              f"{' '.join(f'{x:2}' for x in card.numbers)}")
     print()
 
     # Find all possible combinations/permutations
     print(f"=== Simulating combinations of {args.num_of_cards} cards ===")
     elements: Set[int] = set(range(len(CARDS)))
     combinations: List[Set[int]] = find_permutations(list(elements), args.num_of_cards)
-    print(f"Found a total of {len(combinations)} permutations.")
+    print(f"Performing {args.simu_cycles:,} simulation cycles "
+          f"with a total set of {len(combinations)} permutations.")
 
-    # Do something with the permutations...
-    print(f"Performing {args.simu_cycles:,} simulation cycles with each permutation.")
-    with tqdm(total=len(combinations)) as progress:
-        for _ in combinations:
-            sleep(0.1)
-            progress.update()
+    # Retrieve card deck dynamically from all given cards
+    card_deck: List[int] = []
+    for card in CARDS:
+        card_deck.extend([x for x in card.numbers if x not in card_deck])
+    card_deck.sort()
+
+    # Test all combinations against thousands of ramdomized card decks...
+    total_results: List[Tuple[Set[int], float]] = []
+    iterations: int = len(combinations) * args.simu_cycles
+    with tqdm(total=iterations) as progress:
+        for perm in combinations:
+            perm_results: List[int] = []
+            for _ in range(args.simu_cycles):
+                shuffle(card_deck)
+                card_results: Tuple[int, ...] = (CARDS[x].get_pos_of_last_number(card_deck)
+                                                for x in perm)
+                perm_results.append(max(card_results))
+                progress.update()
+            total_results.append((perm, sum(perm_results) / len(perm_results)))
     print()
 
     # Print results
     print("=== Simulation results ===")
-    for count, perm in enumerate(combinations):
-        cards: List[Card] = [CARDS[x] for x in perm]
-        print(f"{count+1:5}: {' '.join(f'{x.draw_terminal_color()}' for x in cards)}")
+    total_results.sort(key=lambda x: x[1], reverse=False)
+    for i, result in enumerate(total_results):
+        cards: List[Card] = [CARDS[x] for x in result[0]]
+        score: float = result[1]
+        print(f"{i+1:10}: {' '.join(f'{x.draw_terminal_color()}' for x in cards)} - "
+              f"score = {score:.3f}")
 
 
 if __name__ == "__main__":
