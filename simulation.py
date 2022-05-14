@@ -13,14 +13,15 @@ class CardSimu:
 
     def __init__(self, combination: Set[int]) -> None:
         self.combination: Set[int] = combination
-        self.result: Optional[float] = None
+        self.score: Optional[float] = None
 
-    def set_result(self, score: float) -> None:
+    def set_score(self, score: float) -> None:
         """Set the simulation score for this combination."""
-        self.result = score
+        self.score = score
 
-    def get_result(self) -> float:
-        return self.result if self.result else 0
+    def get_score(self) -> float:
+        """Get the simulation score if avaiable."""
+        return self.score if self.score else 0
 
     def get_cards(self) -> Set[Card]:
         """Retreive the global Card objects for this combination."""
@@ -96,7 +97,7 @@ def do_simulation(combinations: List[CardSimu], cycles: int) -> None:
                 shuffle(card_deck)
                 perm_total_sum += min(x.get_pos_of_last_number(card_deck) for x in perm.get_cards())
                 progress.update()
-            perm.set_result(perm_total_sum / cycles)
+            perm.set_score(perm_total_sum / cycles)
     print()
 
 
@@ -109,11 +110,11 @@ def print_results(combinations: List[CardSimu], terse: int = 0) -> None:
         print(f"Showing only the {terse} best and worst results. "
               f"(Show all with -v flag.)")
 
-    combinations.sort(key=lambda x: x.get_result(), reverse=False)
+    combinations.sort(key=lambda x: x.get_score(), reverse=False)
     for i, comb in enumerate(combinations):
         if terse == 0 or i < terse or i >= len(combinations) - terse:
             print(f"{i+1:11}: {' '.join(f'{x.draw_terminal_color()}' for x in comb.get_cards())} "
-                  f"Score = {comb.result:.3f}"
+                  f"Score = {comb.get_score():.3f}"
                   f"{' (best)' if i == 0 else ''}"
                   f"{' (worst)' if i == len(combinations) - 1 else ''}")
 
