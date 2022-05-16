@@ -5,14 +5,16 @@
 from typing import List, Tuple
 from colour import Color  # type: ignore
 
+BingoNumbers = Tuple[int, int, int, int, int, int, int, int, int]
+
 
 class Card:
     """Class for a Bingo card."""
 
-    def __init__(self, name: str, color: Color, numbers: Tuple[int, ...]) -> None:
+    def __init__(self, name: str, color: Color, numbers: BingoNumbers) -> None:
         self.name: str = name
         self.color: Color = color
-        self.numbers: Tuple[int, ...] = numbers
+        self.numbers: BingoNumbers = numbers
 
     def get_pos_of_last_number(self, card_deck: List[int]) -> int:
         """Get the position of this card's last drawn number in a given card set.

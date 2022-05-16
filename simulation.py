@@ -2,13 +2,13 @@
 
 """Bingo simulation module."""
 
-from typing import Any, List, Set, Optional
+from typing import Any, List, Set, Optional, Sequence
 from random import shuffle
 from tqdm import tqdm  # type: ignore
-from cards import Card, CARDS
+from cards import CARDS, Card
 
 
-class CardSimu:
+class Combination:
     """Wrapper for a card combination and the corresponding simulation score."""
 
     def __init__(self, combination: Set[int]) -> None:
@@ -28,7 +28,7 @@ class CardSimu:
         return {CARDS[x] for x in self.combination}
 
 
-def find_permutations(elements: List[Any], n: int) -> List[Set[Any]]:
+def find_permutations(elements: Sequence[Any], n: int) -> List[Set[Any]]:
     """General function to recursively return all possible permutations
     picking n elements from a given set without repetition."""
 
@@ -43,7 +43,7 @@ def find_permutations(elements: List[Any], n: int) -> List[Set[Any]]:
     # More iterations necessary - extend result list by each subset
     result: List[Set[Any]] = []
     for i, element in enumerate(elements):
-        remaining: List[Any] = elements[i + 1:]
+        remaining: Sequence[Any] = elements[i + 1:]
         subtree: List[Set[Any]] = find_permutations(remaining, n - 1)
         result.extend([{element, *x} for x in subtree])
     return result
@@ -59,19 +59,20 @@ def print_cards() -> None:
     print()
 
 
-def find_combinations(num_of_cards: int) -> List[CardSimu]:
+def find_combinations(num_of_cards: int) -> List[Combination]:
     """Find all possible combinations using n out of all cards."""
 
     print("=== Finding all combinations ===")
     elements: List[int] = list(range(len(CARDS)))
-    combinations: List[CardSimu] = [CardSimu(x) for x in find_permutations(elements, num_of_cards)]
+    combinations: List[Combination] = [Combination(x) for x
+                                       in find_permutations(elements, num_of_cards)]
     print(f"Found a total of {len(combinations)} permutations "
           f"taking {num_of_cards} out of {len(CARDS)} cards without repetition.")
     print()
     return combinations
 
 
-def do_simulation(combinations: List[CardSimu], cycles: int) -> None:
+def do_simulation(combinations: List[Combination], cycles: int) -> None:
     """Perform simulation for the given combinations."""
 
     num_of_cards = len(next(iter(combinations[0].get_cards())).numbers)
@@ -101,7 +102,7 @@ def do_simulation(combinations: List[CardSimu], cycles: int) -> None:
     print()
 
 
-def print_results(combinations: List[CardSimu], terse: int = 0) -> None:
+def print_results(combinations: List[Combination], terse: int = 0) -> None:
     """Print pretty statistics and all the other nice stuff we want to see."""
 
     print("=== Simulation results ===")
