@@ -2,7 +2,7 @@
 
 """Bingo simulation module."""
 
-from typing import Any, List, Set, Optional, Sequence
+from typing import Any, List, Sequence, Optional
 from random import shuffle
 from tqdm import tqdm  # type: ignore
 from cards import CARDS, Card
@@ -11,8 +11,8 @@ from cards import CARDS, Card
 class Combination:
     """Wrapper for a card combination and the corresponding simulation score."""
 
-    def __init__(self, combination: Set[int]) -> None:
-        self.combination: Set[int] = combination
+    def __init__(self, combination: List[int]) -> None:
+        self.combination: List[int] = combination
         self.score: Optional[float] = None
 
     def set_score(self, score: float) -> None:
@@ -23,14 +23,15 @@ class Combination:
         """Get the simulation score if avaiable."""
         return self.score if self.score else 0
 
-    def get_cards(self) -> Set[Card]:
+    def get_cards(self) -> List[Card]:
         """Retreive the global Card objects for this combination."""
-        return {CARDS[x] for x in self.combination}
+        return [CARDS[x] for x in self.combination]
 
 
-def find_permutations(elements: Sequence[Any], n: int) -> List[Set[Any]]:
+def find_permutations(elements: Sequence[Any], n: int,
+                      repetition: bool = True) -> List[Sequence[Any]]:
     """General function to recursively return all possible permutations
-    picking n elements from a given set without repetition."""
+    picking n elements from a given sequence with or without repetition."""
 
     # Exit condition in case of parameter error
     if n <= 0 or n > len(elements):
@@ -38,14 +39,15 @@ def find_permutations(elements: Sequence[Any], n: int) -> List[Set[Any]]:
 
     # Only one level left - return each remaining element as option
     if n == 1:
-        return [{x} for x in elements]
+        return [[x] for x in elements]
 
     # More iterations necessary - extend result list by each subset
-    result: List[Set[Any]] = []
+    result: List[Sequence[Any]] = []
     for i, element in enumerate(elements):
-        remaining: Sequence[Any] = elements[i + 1:]
-        subtree: List[Set[Any]] = find_permutations(remaining, n - 1)
-        result.extend([{element, *x} for x in subtree])
+        subtree: List[Sequence[Any]] = find_permutations(
+            elements if repetition else elements[i + 1:],
+            n - 1)
+        result.extend([[element, *x] for x in subtree])
     return result
 
 
@@ -64,8 +66,8 @@ def find_combinations(num_of_cards: int) -> List[Combination]:
 
     print("=== Finding all combinations ===")
     elements: List[int] = list(range(len(CARDS)))
-    combinations: List[Combination] = [Combination(x) for x
-                                       in find_permutations(elements, num_of_cards)]
+    combinations: List[Combination] = [Combination(list(x)) for x
+                                       in find_permutations(elements, num_of_cards, False)]
     print(f"Found a total of {len(combinations)} permutations "
           f"taking {num_of_cards} out of {len(CARDS)} cards without repetition.")
     print()
