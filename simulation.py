@@ -33,15 +33,15 @@ def find_permutations(elements: Sequence[Any], n: int,
     """General function to recursively return all possible permutations
     picking n elements from a given sequence with or without repetition."""
 
-    # Exit condition in case of parameter error
-    if n <= 0 or n > len(elements):
+    # Exit condition or parameter error
+    if n <= 0 or len(elements) == 0:
         return []
 
     # Only one level left - return each remaining element as option
     if n == 1:
         return [[x] for x in elements]
 
-    # More iterations necessary - extend result list by each subset
+    # More iterations necessary - extend result list by each available subset
     result: List[Sequence[Any]] = []
     for i, element in enumerate(elements):
         subtree: List[Sequence[Any]] = find_permutations(
