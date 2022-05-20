@@ -46,7 +46,8 @@ def find_permutations(elements: Sequence[Any], n: int,
     for i, element in enumerate(elements):
         subtree: List[Sequence[Any]] = find_permutations(
             elements if repetition else elements[i + 1:],
-            n - 1)
+            n - 1,
+            repetition)
         result.extend([[element, *x] for x in subtree])
     return result
 
