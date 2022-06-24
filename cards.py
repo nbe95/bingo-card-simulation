@@ -12,14 +12,18 @@ class Card:
     """Class for a Bingo card."""
 
     def __init__(self, name: str, color: Color, numbers: BingoNumbers) -> None:
+        """Create an object emulating a real Bingo Card with a name, a color and numbers on it."""
         self.name: str = name
         self.color: Color = color
         self.numbers: BingoNumbers = numbers
 
     def get_pos_of_last_number(self, card_deck: List[int]) -> int:
-        """Get the position of this card's last drawn number in a given card set.
-        This is the total number of iterations this card needs to be completely solved."""
+        """
+        Indicate a card's level of strengt.
 
+        This function gets the position of this card's last drawn number in a given card set.
+        This is the total number of iterations this card needs to be completely solved.
+        """
         # Iterate over the card deck and abort if there's a matching number on this card.
         # (It makes no difference whether we check for the first or last occurence of this number.)
         for index, number in enumerate(card_deck):
@@ -31,11 +35,11 @@ class Card:
 
     def draw_terminal_color(self) -> str:
         """Return a color representing field of spaces for ANSI terminals."""
-
         rgb: List[int] = [int(c * 255) for c in self.color.rgb]
         return f"\x1b[48;2;{';'.join(map(str, rgb))}m  \x1b[0m"
 
 
+# Global card list
 CARDS: List[Card] = [
     Card("Red",             Color("#cc0044"), (11, 27,  1, 24, 14, 18, 21,  4,  9)),    # noqa
     Card("Pink",            Color("#ff88cc"), (29, 19, 13,  6, 10, 22,  3, 15, 28)),    # noqa

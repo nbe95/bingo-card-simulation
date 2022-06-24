@@ -1,6 +1,10 @@
 #!/usr/bin/env python3
 
-"""Main Bingo module. Which combination of cards has the highest chance to win?"""
+"""
+Main Python module to simulate the strength of Bingo cards.
+
+Which combination of cards has the highest chance to win?
+"""
 
 import argparse
 import sys
@@ -9,8 +13,7 @@ from simulation import print_cards, find_combinations, do_simulation, print_resu
 
 
 def options() -> argparse.Namespace:
-    """Wrapper for CLI argument parsing."""
-
+    """Parse CLI arguments effectively."""
     parser = argparse.ArgumentParser(
         description="An awesome Bingo card combination simulator! "
                     "Which combination of cards has the highest chance to win?")
@@ -26,8 +29,7 @@ def options() -> argparse.Namespace:
 
 
 def main(args: argparse.Namespace) -> None:
-    """Main entry point."""
-
+    """Bundle module functionality as main entry point."""
     # Catch Ctrl+C as exit condition
     try:
         print_cards()
