@@ -3,17 +3,16 @@
 """General helper script to handle finding of permutations."""
 
 
-from typing import List, Sequence, Any
+from typing import Any, List, Sequence
 
 
 def find_permutations(
     elements: Sequence[Any], n: int, repetition: bool = True
 ) -> List[Sequence[Any]]:
-    """
-    General function to find all possible permutations of a generic set recursively.
+    """Find all possible permutations of a generic set recursively.
 
-    A specific number of elements will be picked from the given sequence with or
-    without repetition, as configured.
+    A specific number of elements will be picked from the given sequence with
+    or without repetition, as configured.
     """
     # Exit condition or parameter error
     if n <= 0 or len(elements) == 0:
