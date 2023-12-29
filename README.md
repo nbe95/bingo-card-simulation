@@ -6,12 +6,13 @@ It was one of those game evenings with the family when I got curious about how
 to increase your chances of winning at Bingo by choosing your collection of
 cards the most clever way.
 
-Since there are [a total of 10 Bingo cards](./blob/documentation/src/cards.py#L46)
-with 9 numbers from 1 to 30 each, which are also distributed evenly, all cards
-are of equal worth in general. But when playing with a set of multiple cards,
-choosing such ones with duplicate numbers obviously affects the chance of
-winning directly, because one number will be eliminated on more than one card at
-once when it is called. Not a big deal?  *Let's find out.*
+Since there is [a total of 10 Bingo
+cards](/nbe95/bingo-card-simulation/blob/main/src/cards.py#L46) with 9 numbers
+from 1 to 30 each, which are also distributed evenly, all cards are generally of
+equal worth. But when playing with a set of multiple cards, choosing such
+ones with duplicate numbers obviously affects the chance of winning directly,
+because one number will be eliminated on more than one card at once when it is
+called. Not a big deal, you may ask? *Let's find out.*
 
 ## Theory
 
