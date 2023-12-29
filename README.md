@@ -16,13 +16,13 @@ called. Not a big deal, you may ask? *Let's find out.*
 
 ## Theory
 
-Time for a basic brute-force algorithm using recursion! :tada:
-This program calculates all possible permutations of *n* of the 10 given cards a
-player could choose and performs 100,000 (configurable) simulated games with
-this set of cards. It tracks the total score, i.e. the amount of called numbers
-necessary for this set to win, and calculates an average score over all
-simulation cycles. Finally, the 10 best and 10 worst card combinations are
-printed.
+It's time for a basic brute-force algorithm using recursion! :tada:
+So, this program calculates all possible permutations of *n* of the 10 given
+cards a player could choose and performs 100,000 (configurable) simulated games
+with this set of cards. It tracks the total score, i.e. the amount of called
+numbers necessary for *one card of this set to win*, and calculates an average
+score over all simulation cycles. Finally, the 10 best and 10 worst card
+combinations are printed.
 
 ## Let's put it into practice
 
