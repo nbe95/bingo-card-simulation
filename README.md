@@ -16,10 +16,11 @@ called. Not a big deal, you may ask? *Let's find out.*
 ## Theory
 
 It's time for a basic brute-force algorithm using recursion! :tada:
+
 So, this program calculates all possible permutations of *n* of the 10 given
 cards a player could choose and performs 100,000 (configurable) simulated games
 with this set of cards. It tracks the total score, i.e. the amount of called
-numbers necessary for *one card of this set to win*, and calculates an average
+numbers necessary for **one card of this set to win**, and calculates an average
 score over all simulation cycles. Finally, the 10 best and 10 worst card
 combinations are printed.
 
@@ -46,8 +47,9 @@ Example run:
 
 ## Epilogue
 
-Am I a better Bingo now? Don't know.
+Am I a better Bingo player now? Probably not. This simulation shows that pure
+luck has a much higher impact on winning than picking a specific set of cards.
 
-Anyway, it has been a fantastic programming exercise! And be sure that I'll be
-picking the most valuable card combinations from now on when playing
-Bingo. :wink:
+Anyway, it has been a fantastic programming exercise. Apart from that, be sure
+that I *will* be picking the most valuable card combinations from now on when
+playing Bingo. :wink:
